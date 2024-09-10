@@ -12,12 +12,10 @@ const fetchExternalAssetsData = async () => {
       },
     });
 
-    // Check if the response is successful
     if (!response.ok) {
       throw new Error(`Failed to fetch data: ${response.statusText}`);
     }
 
-    // Parse the response as JSON
     const data = await response.json();
     return data;
   } catch (error) {
@@ -30,7 +28,10 @@ const fetchExternalAssetsData = async () => {
 export async function GET() {
   try {
     const data = await fetchExternalAssetsData();
-    return NextResponse.json({ success: true, data });
+    return NextResponse.json(
+      { success: true, data },
+      { headers: { "Cache-Control": "no-store" } }
+    );
   } catch (error) {
     return NextResponse.json(
       { success: false, message: "Failed to fetch assets data" },
