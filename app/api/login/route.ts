@@ -1,4 +1,3 @@
-// app/api/login/route.ts
 "use server";
 
 import { cookies } from "next/headers";
@@ -30,23 +29,28 @@ export async function login(formData: FormData) {
   const user = users.find((u) => u.email === email && u.password === password);
 
   if (!user) {
-    return { error: "بيانات غير صالحة" }; // Invalid credentials
+    return { error: "Invalid credentials" };
   }
 
   // Set session cookie
   const cookieValue = JSON.stringify({
     id: user.id,
     name: user.name,
-    isdamin: user.isdamin, // assuming you have an admin flag
-    isLoggedIn: true, // this field should be added
+    isdamin: user.isdamin,
+    isLoggedIn: true,
   });
-  
+
   cookieStore.set("session", cookieValue, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    maxAge: 60 * 60 * 24 * 7, // 7 days
+    maxAge: 60 * 15,
     path: "/",
   });
 
-  redirect("/");
+  // Redirect based on user role
+  if (user.isdamin) {
+    redirect("/");
+  } else {
+    redirect("/assetInventory");
+  }
 }

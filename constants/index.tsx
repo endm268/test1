@@ -41,6 +41,22 @@ export const navLinks: NavLink[] = [
   // Add more pages
 ];
 
+// Your navLinks array
+export const usernavLinks: NavLink[] = [
+  {
+    label: "الجرد",
+    route: "/assetInventory",
+    icon: TicketSlash,
+  },
+  {
+    label: "اضافة اصل لجرد",
+    route: "/assetInventory/new",
+    icon: SquarePlus,
+  },
+
+  // Add more pages
+];
+
 //show table header
 // Mapping of column IDs to display names
 export const columnNames: Record<string, string> = {

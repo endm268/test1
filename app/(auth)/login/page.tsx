@@ -11,7 +11,7 @@ const Login = () => {
       </div>
       <div className="hidden bg-muted dark:bg-white lg:block">
         <Image
-          src="/logoMFZ.svg"
+          src="logoMFZ.svg"
           alt="MFZ lofo"
           width="1920"
           height="1080"

@@ -1,17 +1,39 @@
 "use client";
-import React, { useState } from "react";
-//next js
+import React, { useState, useEffect } from "react";
+// next js
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-//menu
-import { navLinks } from "@/constants";
+// menu
+import { navLinks, usernavLinks } from "@/constants";
 import { Button } from "../ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import LogoutButton from "./LogoutButton";
 
+// Example session fetching function (replace with actual session logic)
+const getSessionData = async () => {
+  const response = await fetch("/api/getSession");
+  const data = await response.json();
+  return data;
+};
+
 const Sidebar = () => {
   const [collapse, setCollapse] = useState<boolean>(false);
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const pathname = usePathname();
+
+  useEffect(() => {
+    // Fetch the session data on component mount
+    const fetchSession = async () => {
+      const session = await getSessionData();
+      if (session?.isAdmin !== undefined) {
+        setIsAdmin(session.isAdmin);
+      }
+    };
+    fetchSession();
+  }, []);
+
+  // Conditional rendering based on the role
+  const links = isAdmin ? navLinks : usernavLinks;
 
   return (
     <div className="sidebar">
@@ -39,7 +61,7 @@ const Sidebar = () => {
             {/* nav */}
             <nav className="flex flex-col overflow-auto lg:flex">
               <ul className="hidden w-full flex-col items-start gap-2 md:flex">
-                {navLinks.map((link) => {
+                {links.map((link) => {
                   const isActive = link.route === pathname;
                   const IconComponent = link.icon;
                   return (
@@ -67,11 +89,11 @@ const Sidebar = () => {
             </nav>
           </div>
         ) : (
-          <div className="sidebar-collapse-close ">
+          <div className="sidebar-collapse-close">
             {/* nav */}
-            <nav className="flex flex-coll overflow-auto lg:flex">
+            <nav className="flex flex-col overflow-auto lg:flex">
               <ul className="hidden w-full flex-col items-start gap-2 md:flex">
-                {navLinks.map((link) => {
+                {links.map((link) => {
                   const isActive = link.route === pathname;
                   const IconComponent = link.icon;
                   return (
