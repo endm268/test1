@@ -1,73 +1,59 @@
 "use client";
-import React, { useState, useEffect } from "react";
-// next js
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-// menu
-import { navLinks, usernavLinks } from "@/constants";
+// icons
 import { Button } from "../ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import LogoutButton from "./LogoutButton";
+import { navLinks } from "@/constants";
+import { useState } from "react";
 
-// Example session fetching function (replace with actual session logic)
-const getSessionData = async () => {
-  const response = await fetch("/api/getSession");
-  const data = await response.json();
-  return data;
-};
 
-const Sidebar = () => {
+interface SidebarProps {
+  role: string;
+}
+
+// Sidebar component
+const Sidebar = ({ role }: SidebarProps) => {
   const [collapse, setCollapse] = useState<boolean>(false);
-  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const pathname = usePathname();
 
-  useEffect(() => {
-    // Fetch the session data on component mount
-    const fetchSession = async () => {
-      const session = await getSessionData();
-      if (session?.isAdmin !== undefined) {
-        setIsAdmin(session.isAdmin);
-      }
-    };
-    fetchSession();
-  }, []);
-
-  // Conditional rendering based on the role
-  const links = isAdmin ? navLinks : usernavLinks;
 
   return (
     <div className="sidebar">
-      <div className="sidebar-contaner">
-        <div className="sidebar-toggel">
+      <div className="sidebar-container">
+        {/* Sidebar toggle button */}
+        <div className="sidebar-toggle">
           <Button
             onClick={() => {
               setCollapse(!collapse);
             }}
           >
             {!collapse ? (
-              <div>
-                <ChevronRight className="w-4 h-4" />
-              </div>
+              <ChevronRight className="w-4 h-4" />
             ) : (
-              <div>
-                <ChevronLeft className="w-4 h-4" />
-              </div>
+              <ChevronLeft className="w-4 h-4" />
             )}
           </Button>
         </div>
-        {/* content */}
+
+        {/* Sidebar content */}
         {!collapse ? (
-          <div className="sidebar-collapse-open">
-            {/* nav */}
+          <div className="sidebar-expanded mt-8">
+            {/* Navigation */}
             <nav className="flex flex-col overflow-auto lg:flex">
-              <ul className="hidden w-full flex-col items-start gap-2 md:flex">
-                {links.map((link) => {
+              <ul className="flex w-full flex-col items-start gap-2 md:flex">
+                {navLinks.map((link) => {
+                  // Check if the current role is allowed to see the link
+                  if (role && !link.visible?.includes(role)) return null;
+
                   const isActive = link.route === pathname;
                   const IconComponent = link.icon;
+
                   return (
                     <li
                       key={link.route}
-                      className={`flex flex-col w-full whitespace-nowrap rounded-xl ${
+                      className={`flex w-full whitespace-nowrap rounded-xl ${
                         isActive
                           ? "text-white bg-black dark:bg-white dark:text-black"
                           : ""
@@ -89,32 +75,34 @@ const Sidebar = () => {
             </nav>
           </div>
         ) : (
-          <div className="sidebar-collapse-close">
-            {/* nav */}
+          <div className="sidebar-collapsed mt-8">
+            {/* Collapsed Navigation */}
             <nav className="flex flex-col overflow-auto lg:flex">
-              <ul className="hidden w-full flex-col items-start gap-2 md:flex">
-                {links.map((link) => {
+              <ul className="flex w-full flex-col items-start gap-2 md:flex">
+                {navLinks.map((link) => {
+                  // Check if the current role is allowed to see the link
+
                   const isActive = link.route === pathname;
                   const IconComponent = link.icon;
-                  return (
-                    <li
-                      key={link.route}
-                      className={`flex flex-col w-full whitespace-nowrap rounded-xl ${
-                        isActive
-                          ? "text-white bg-black dark:bg-white dark:text-black"
-                          : ""
-                      }`}
-                    >
-                      <Link
-                        className="p-16-semibold flex justify-between size-full gap-4 p-4"
-                        href={link.route}
+
+                  if (link.visible?.includes(role as string))
+                    return (
+                      <li
+                        key={link.route}
+                        className={`flex w-full whitespace-nowrap rounded-xl ${
+                          isActive
+                            ? "text-white bg-black dark:bg-white dark:text-black"
+                            : ""
+                        }`}
                       >
-                        <div className="flex items-center gap-4 text-xl">
+                        <Link
+                          className="p-16-semibold flex justify-center size-full gap-4 p-4"
+                          href={link.route}
+                        >
                           <IconComponent className="h-5 w-5" />
-                        </div>
-                      </Link>
-                    </li>
-                  );
+                        </Link>
+                      </li>
+                    );
                 })}
               </ul>
             </nav>

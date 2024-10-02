@@ -1,119 +1,69 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { AssetData } from "@/constants";
+import { useRouter } from "next/router";
+import axios from "axios";
+import { AssetDetail } from "@/Types/Types";
 import HeaderPage from "@/components/shared/headerPage";
 
-// Updated Asset interface to handle nullable fields
-interface Asset {
-  assetNumber: string;
-  fullName: string;
-  state: string;
-  place: string | null;
-  mainValue: number | null;
-  dateUse: string | null;
-  reciever: string | null;
-  boardNumber: string | null;
-  motorNumber: string | null;
-  structureNumber: string | null;
-  yearCreate: string | null;
-  oudoPlace: string | null;
-  ramadanPlace: string | null;
-}
-
-const Read = ({ params }: { params: { id: string } }) => {
-  const [data, setData] = useState<Asset | null>(null);
+const AssetInventory = ({ params }: { params: { id: string } }) => {
+  const [data, setData] = useState<AssetDetail | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    console.log("useEffect triggered with params.id:", params.id);
+    if (params.id) {
+      const fetchAsset = async () => {
+        try {
+          const [n1, n2, n3, n4] = params.id.toString().split("-").map(Number);
+          const response = await axios.get(`/api/assetInventory/${params.id}`, {
+            params: { n1, n2, n3, n4 },
+          });
+          if (response.data.success) {
+            setData(response.data.data);
+          } else {
+            setError("Asset not found");
+          }
+        } catch (err) {
+          setError("Error fetching asset data");
+        } finally {
+          setLoading(false);
+        }
+      };
 
-    const filteredData = AssetData.find(
-      (asset) => asset.assetNumber === params.id
-    );
-
-    setData(filteredData || null);
+      fetchAsset();
+    }
   }, [params.id]);
 
-  if (data === null) {
-    return (
-      <div>
-        <p>Loading asset details...</p>
-      </div>
-    );
-  }
+  if (loading) return <div>تحميل...</div>;
+  if (error) return <div>{error}</div>;
+
   return (
     <div className="flex flex-col gap-2 py-2">
-      <HeaderPage title={"عرض اصل  في الجرد"} />
-      <div className="container flex flex-col gap-2 mx-auto py-10">
-        {data.assetNumber && (
-          <p>
-            <strong>الرقم التعريفي:</strong> {data.assetNumber}
-          </p>
-        )}
-        {data.fullName && (
-          <p>
-            <strong>الاسم الكامل:</strong> {data.fullName}
-          </p>
-        )}
-        {data.state && (
-          <p>
-            <strong>الحالة:</strong> {data.state}
-          </p>
-        )}
-        {data.place && (
-          <p>
-            <strong>المكان:</strong> {data.place}
-          </p>
-        )}
-        {data.mainValue !== null && (
-          <p>
-            <strong>القيمة الرئيسية:</strong> {data.mainValue.toLocaleString()}
-          </p>
-        )}
-        {data.dateUse && (
-          <p>
-            <strong>تاريخ الاستخدام:</strong>{" "}
-            {new Date(data.dateUse).toLocaleDateString()}
-          </p>
-        )}
-        {data.reciever && (
-          <p>
-            <strong>المستلم:</strong> {data.reciever}
-          </p>
-        )}
-        {data.boardNumber && (
-          <p>
-            <strong>رقم اللوحة:</strong> {data.boardNumber}
-          </p>
-        )}
-        {data.motorNumber && (
-          <p>
-            <strong>رقم المحرك:</strong> {data.motorNumber}
-          </p>
-        )}
-        {data.structureNumber && (
-          <p>
-            <strong>رقم الهيكل:</strong> {data.structureNumber}
-          </p>
-        )}
-        {data.yearCreate && (
-          <p>
-            <strong>سنة الإنشاء:</strong> {data.yearCreate}
-          </p>
-        )}
-        {data.oudoPlace && (
-          <p>
-            <strong>مكان أودو:</strong> {data.oudoPlace}
-          </p>
-        )}
-        {data.ramadanPlace && (
-          <p>
-            <strong>مكان رمضان:</strong> {data.ramadanPlace}
-          </p>
+      <HeaderPage title={"تفصيل الاصل المجرود"} />
+      <div className="container mx-auto py-10">
+        {data && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="p-4 bg-muted dark:text-white rounded-xl">
+              <div>الاسم الكامل:</div> {data.fullName}
+            </div>
+            <div className="p-4 bg-muted dark:text-white rounded-xl">
+              <div>الرقم التسلسلي:</div> {data.serialNumber}
+            </div>
+            <div className="p-4 bg-muted dark:text-white rounded-xl">
+              <div>العلامة:</div> {data.tag}
+            </div>
+            <div className="p-4 bg-muted dark:text-white rounded-xl">
+              <div>الحالة:</div> {data.status}
+            </div>
+            <div className="p-4 bg-muted dark:text-white rounded-xl">
+              <div>المكان:</div> {data.place}
+            </div>
+          </div>
         )}
       </div>
     </div>
   );
 };
 
-export default Read;
+export default AssetInventory;

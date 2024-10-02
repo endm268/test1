@@ -1,6 +1,7 @@
 import React from "react";
-import AssetInventoryForm from "@/components/shared/AssetInventoryForm";
+
 import HeaderPage from "@/components/shared/headerPage";
+import AssetInventoryForm from "@/components/forms/AssetInventoryForm";
 const NewAssetInventory = () => {
   return (
     <div className="flex flex-col gap-2 py-2">

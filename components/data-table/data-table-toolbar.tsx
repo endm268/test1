@@ -28,18 +28,9 @@ export function DataTableToolbar<TData>({
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
   const [searchcolumn, setSearchColumn] = useState<string>("");
-  const defaultSearchColumn = "fullName";
 
-  const [dateRange, setDateRange] = useState<{ from: Date; to: Date }>({
-    from: new Date(new Date().getFullYear(), 0, 1),
-    to: new Date(),
-  });
 
-  const handleDateSelect = ({ from, to }: { from: Date; to: Date }) => {
-    setDateRange({ from, to });
-    // Filter table data based on selected date range
-    table.getColumn("date")?.setFilterValue([from, to]);
-  };
+
 
   return (
     <div className="flex flex-wrap items-center justify-between">
@@ -48,16 +39,16 @@ export function DataTableToolbar<TData>({
           {/* Search */}
           <Input
             placeholder={`البحث في ${
-              columnNamesSearch[searchcolumn || defaultSearchColumn]
+              columnNamesSearch[searchcolumn ]
             }`}
             value={
               (table
-                .getColumn(searchcolumn || defaultSearchColumn)
+                .getColumn(searchcolumn )
                 ?.getFilterValue() as string) ?? ""
             }
             onChange={(event) =>
               table
-                .getColumn(searchcolumn || defaultSearchColumn)
+                .getColumn(searchcolumn)
                 ?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
@@ -91,7 +82,7 @@ export function DataTableToolbar<TData>({
           </Select>
         </div>
 
-        {!disabled && (
+        {!disabled ? (
           <>
             {table.getColumn("state") && (
               <DataTableFacetedFilter
@@ -99,11 +90,11 @@ export function DataTableToolbar<TData>({
                 title="حالة الاصل"
                 options={asset_State}
               />
-            )}
+            )}{" "}
           </>
-        )}
+        ) : null}
 
-        {!disabled && (
+        {!disabled ? (
           <>
             {table.getColumn("mainValue") && (
               <DataTableFacetedFilter
@@ -113,7 +104,7 @@ export function DataTableToolbar<TData>({
               />
             )}
           </>
-        )}
+        ): null}
 
         {isFiltered && (
           <Button

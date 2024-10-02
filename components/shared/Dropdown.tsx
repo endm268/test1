@@ -38,7 +38,7 @@ const Dropdown = ({
 }: DropdownProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
-
+  
   const filteredOptions = React.useMemo(() => {
     return options.filter((option) => {
       const matchesQuery = option.label.includes(searchQuery);
@@ -82,7 +82,7 @@ const Dropdown = ({
           onChange={handleSearchChange}
           ref={inputRef}
         />
-        <Separator className="border-b border-white my-4" />
+        <Separator className="my-4" />
         {filteredOptions.length > 0 ? (
           filteredOptions.map((option) => (
             <SelectItem

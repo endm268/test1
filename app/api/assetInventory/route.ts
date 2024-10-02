@@ -3,7 +3,7 @@ import https from "https";
 import { NextResponse } from "next/server";
 
 const fetchExternalAssetsData = async () => {
-  const apiUrl = "http://10.10.10.74:2000/api/Main/AllAssertData";
+  const apiUrl = "http://10.10.10.74:2000/api/Main/AllAssertData-Been-Jard";
 
   // Create an HTTPS agent that allows self-signed certificates
   const agent = new https.Agent({

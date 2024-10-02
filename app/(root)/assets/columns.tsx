@@ -1,11 +1,11 @@
-import { DataTableColumnHeader } from "@/components/shared/data-table-column-header";
+import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { Button } from "@/components/ui/button";
-import { Asset } from "@/constants/Types";
+import { AssetDetail } from "@/Types/Types";
 import { ColumnDef } from "@tanstack/react-table";
 import { Eye, Pen, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-export const Assetcolumns: ColumnDef<Asset>[] = [
+export const Assetcolumns: ColumnDef<AssetDetail>[] = [
   {
     accessorKey: "id",
     header: "ID",
@@ -200,6 +200,26 @@ export const Assetcolumns: ColumnDef<Asset>[] = [
     size: 200,
   },
   {
+    accessorKey: "insertedFromUser",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="من اضاف الاصل" />
+    ),
+    cell: ({ row }) => {
+      const value: any = row.getValue("insertedFromUser");
+
+      if (value === true) {
+        return (
+          <div className="text-center p-2 rounded-md bg-lime-500 text-white font-medium">
+            مضاف اثناء الجرد
+          </div>
+        );
+      }
+
+      return <div>موجود في الاودو</div>;
+    },
+    size: 200,
+  },
+  {
     id: "actions",
     header: "الاجراءات",
     cell: ({ row }) => {
@@ -210,9 +230,6 @@ export const Assetcolumns: ColumnDef<Asset>[] = [
         router.push(`/assets/${value}`);
       };
 
-      const handleEdit = () => {
-        router.push(`/assets/edit/${value}`);
-      };
       return (
         <div className="flex justify-between items-center gap-2">
           <Button className="bg-sky-500 text-white" onClick={handleView}>

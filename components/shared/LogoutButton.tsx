@@ -26,7 +26,7 @@ const LogoutButton = ({ collapse }: LogoutProps) => {
   };
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center mt-8">
       {error && <p className="text-red-500 mb-4">{error}</p>}
       <Button
         onClick={handleLogout}

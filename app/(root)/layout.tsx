@@ -6,12 +6,15 @@ import Header from "@/components/shared/header";
 import { Toaster } from "@/components/ui/toaster";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
+import SkeletonSideBar from "@/components/skeleton/SkeletonSideBar"; // Import the skeleton
+import SkeletonHeader from "@/components/skeleton/SkeletonHeader";
+import SkeletonChildren from "@/components/skeleton/SkeletonChildren";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  const [session, setSession] = useState(null);
+  const [session, setSession] = useState<any>(null); // Define session as 'any'
+  const [loading, setLoading] = useState(true); // Add a loading state
   const router = useRouter();
 
-  // Fetch the session on the client side
   useEffect(() => {
     const fetchSession = async () => {
       try {
@@ -19,33 +22,40 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           credentials: "include",
         });
         const data = await res.json();
-
-        // Check if session exists and user is logged in
-        console.log(data.isLoggedIn); // Ensure correct casing
-        if (data.isLoggedIn === true) {
-          // Access with correct case
+        if (data.isLoggedIn) {
           setSession(data);
         } else {
-          // Redirect to login if session is invalid or user is not logged in
           router.push("/login");
         }
       } catch (error) {
         console.error("Failed to fetch session:", error);
         router.push("/login");
+      } finally {
+        setLoading(false); // Set loading to false once fetching is complete
       }
     };
 
     fetchSession();
   }, [router]);
 
-  // Render loading state or main layout based on session
-  // if (!session) {
-  //   return <div>Loading...</div>; // Optionally show a loading state
-  // }
+  if (loading) {
+    return (
+      <main className="root">
+        <SkeletonSideBar />
+        <MobileNav />
+        <div className="root-container">
+          <SkeletonHeader />
+          <Separator className="my-4 hidden lg:flex" />
+          <SkeletonChildren />
+        </div>
+        <Toaster />
+      </main>
+    );
+  }
 
   return (
     <main className="root">
-      <Sidebar />
+      <Sidebar role={session.role}/>
       <MobileNav />
       <div className="root-container">
         <Header />

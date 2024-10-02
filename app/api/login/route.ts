@@ -6,17 +6,27 @@ import { redirect } from "next/navigation";
 const users = [
   {
     id: "1",
-    name: "Admin User",
-    email: "admin@admin.com",
+    name: "malik",
+    email: "admin@mfz.com",
     password: "123456",
-    isdamin: true,
+    role: "admin",
+    device: "admin malik",
   },
   {
     id: "2",
-    name: "Regular User",
-    email: "user@admin.com",
+    name: "mohamed",
+    email: "user@mfz.com",
     password: "123456",
-    isdamin: false,
+    role: "user",
+    device: "user mohamed",
+  },
+  {
+    id: "3",
+    name: "ali",
+    email: "ali@mfz.com",
+    password: "123456",
+    role: "noter",
+    device: "ali mohamed",
   },
 ];
 
@@ -36,7 +46,9 @@ export async function login(formData: FormData) {
   const cookieValue = JSON.stringify({
     id: user.id,
     name: user.name,
-    isdamin: user.isdamin,
+    role: user.role,
+    email:user.email,
+    device:user.device,
     isLoggedIn: true,
   });
 
@@ -48,9 +60,12 @@ export async function login(formData: FormData) {
   });
 
   // Redirect based on user role
-  if (user.isdamin) {
+  if (user.role === "admin") {
     redirect("/");
-  } else {
+  } else if (user.role === "user") {
     redirect("/assetInventory");
+  }
+  if (user.role === "noter") {
+    redirect("/noteis");
   }
 }

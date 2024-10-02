@@ -15,7 +15,7 @@ const HeaderPage = ({ title, disabled }: HeaderPageProps) => {
     router.back();
   };
   return (
-    <div className="header-page flex justify-between items-center">
+    <div className="header-page bg-muted p-4 rounded-xl flex justify-between items-center">
       <h1 className="text-2xl font-semibold">{title}</h1>
 
       {!disabled ? <Button onClick={handleBack}>رجوع</Button> : <></>}

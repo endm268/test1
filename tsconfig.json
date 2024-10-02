@@ -27,6 +27,6 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "components/shared"
-  ],
+, "components/forms/AssetInventoryForm.tsx"  ],
   "exclude": ["node_modules"]
 }

@@ -1,3 +1,4 @@
+// app/api/getSession/route.ts
 import { cookies } from "next/headers";
 
 export async function GET() {
@@ -11,6 +12,7 @@ export async function GET() {
   }
 
   try {
+    // Parse the session data from the cookie
     const sessionData = JSON.parse(cookieHeader.value);
 
     if (!sessionData || !sessionData.isLoggedIn) {
@@ -19,12 +21,14 @@ export async function GET() {
       });
     }
 
+    // Return all session data
     return new Response(JSON.stringify(sessionData), {
       status: 200,
+      headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    return new Response(JSON.stringify({ error: "Invalid session" }), {
-      status: 401,
+    return new Response(JSON.stringify({ error: "Invalid session data" }), {
+      status: 500,
     });
   }
 }

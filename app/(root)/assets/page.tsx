@@ -1,8 +1,6 @@
 "use client";
 
-import { DataTable } from "@/components/shared/data-table";
-import { AssetData } from "@/constants";
-import { AssetFetchData } from "@/lib/actions/assets";
+import { DataTable } from "@/components/data-table/data-table";
 import React, { useEffect, useState } from "react";
 import { Assetcolumns } from "./columns";
 import HeaderPage from "@/components/shared/headerPage";
@@ -43,9 +41,9 @@ const Assets = () => {
   }
 
   return (
-    <div className="flex flex-col gap-2 py-2">
+    <div className="flex flex-col gap-8 py-2">
       <HeaderPage title={"عرض كل الاصول في الاودو"} disabled={true} />
-      <div className="container mx-auto py-10">
+      <div className="container mx-auto w-full">
         <DataTable columns={columns} data={data} />
       </div>
     </div>
