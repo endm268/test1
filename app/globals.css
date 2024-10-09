@@ -91,7 +91,7 @@
 
 html,
 body {
-  height: 100%;
+  height: 200%;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -141,7 +141,7 @@ body {
 @layer utilities {
   /* ===== UTILITIES */
   .wrapper {
-    @apply px-2 md:px-4 max-h-screen  w-full;
+    @apply px-2 md:px-4 max-h-screen w-full;
   }
 
   /* ===== ALIGNMENTS */
@@ -208,14 +208,14 @@ body {
   }
   /* toster Component */
 
-  .success-toast {
+ .success-toast {
     @apply bg-green-100 text-green-900;
   }
 
   .error-toast {
     @apply bg-red-100 text-red-900;
   }
-
+  
   /* Sidebar Component */
   .sidebar {
     @apply hidden h-screen p-5 shadow-md shadow-gray-200 lg:flex;

@@ -27,6 +27,6 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "components/shared"
-  ],
+, "components/forms/AssetForm.tsx"  ],
   "exclude": ["node_modules"]
 }

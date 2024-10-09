@@ -13,7 +13,8 @@ import {
 } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 import { Separator } from "../ui/separator";
-import { ModeToggle } from "../ModeToggle";
+import { ModeToggle } from "./ModeToggle";
+
 
 const MobileNav = () => {
   const pathname = usePathname();

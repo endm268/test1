@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
-import { ModeToggle } from "../ModeToggle";
+import { ModeToggle } from "./ModeToggle";
+
 const Header = () => {
   return (
     <div className="hidden lg:flex justify-between items-center mb-4">

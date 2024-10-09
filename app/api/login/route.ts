@@ -6,17 +6,78 @@ import { redirect } from "next/navigation";
 const users = [
   {
     id: "1",
-    name: "Admin User",
-    email: "admin@admin.com",
+    name: "malik",
+    email: "admin@mfz.com",
     password: "123456",
-    isdamin: true,
+    role: "admin",
+    device: "admin malik",
+    permissions: {
+      canOdooDelete: true,
+      canOdooUpdate: true,
+      canOdooCreate: true,
+      canOdooShowlist: true,
+      canOdooShow: true,
+    },
   },
   {
     id: "2",
-    name: "Regular User",
-    email: "user@admin.com",
+    name: "mohamed",
+    email: "user@mfz.com",
     password: "123456",
-    isdamin: false,
+    role: "user",
+    device: "user mohamed",
+    permissions: {
+      canOdooDelete: false,
+      canOdooUpdate: true,
+      canOdooCreate: false,
+      canOdooShowlist: true,
+      canOdooShow: true,
+    },
+  },
+  {
+    id: "3",
+    name: "ali",
+    email: "ali@mfz.com",
+    password: "123456",
+    role: "noter",
+    device: "ali mohamed",
+    permissions: {
+      canOdooDelete: false,
+      canOdooUpdate: false,
+      canOdooCreate: false,
+      canOdooShowlist: true,
+      canOdooShow: true,
+    },
+  },
+  {
+    id: "4",
+    name: "ramadan",
+    email: "ramadan@mfz.com",
+    password: "ramadan",
+    role: "odoo",
+    device: "ramadan",
+    permissions: {
+      canOdooDelete: true,
+      canOdooUpdate: true,
+      canOdooCreate: true,
+      canOdooShowlist: true,
+      canOdooShow: true,
+    },
+  },
+  {
+    id: "4",
+    name: "test",
+    email: "test@mfz.com",
+    password: "test",
+    role: "odoo",
+    device: "test",
+    permissions: {
+      canOdooDelete: false,
+      canOdooUpdate: true,
+      canOdooCreate: true,
+      canOdooShowlist: true,
+      canOdooShow: true,
+    },
   },
 ];
 
@@ -32,25 +93,32 @@ export async function login(formData: FormData) {
     return { error: "Invalid credentials" };
   }
 
-  // Set session cookie
+  // Set session cookie with all user data, including permissions
   const cookieValue = JSON.stringify({
     id: user.id,
     name: user.name,
-    isdamin: user.isdamin,
+    role: user.role,
+    email: user.email,
+    device: user.device,
+    permissions: user.permissions, // Include permissions in the cookie
     isLoggedIn: true,
   });
 
   cookieStore.set("session", cookieValue, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    maxAge: 60 * 15,
+    maxAge: 60 * 60 * 1, // 15 minutes
     path: "/",
   });
 
   // Redirect based on user role
-  if (user.isdamin) {
+  if (user.role === "admin") {
     redirect("/");
-  } else {
+  } else if (user.role === "user") {
     redirect("/assetInventory");
+  } else if (user.role === "noter") {
+    redirect("/noteis");
+  } else if (user.role === "odoo") {
+    redirect("/assets");
   }
 }

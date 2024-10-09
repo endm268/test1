@@ -1,40 +1,30 @@
 import { NextResponse } from "next/server";
 
-// Fetch data from the external API
-const fetchExternalAssetsData = async () => {
-  const apiUrl = "http://10.10.10.74:2000/api/Main/AllAssertData";
+// API route for fetching assets
+export async function GET() {
+  // Construct the API URL based on the query parameters
+  const url = `http://10.10.10.74:5000/odoo/assets/?page_number=1&page_size=15000`;
 
   try {
-    const response = await fetch(apiUrl, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    // Fetch data from the external API
+    const response = await fetch(url);
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch data: ${response.statusText}`);
+      return NextResponse.json(
+        { error: "Failed to fetch assets" },
+        { status: 500 }
+      );
     }
 
     const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error fetching external assets data:", error);
-    throw error;
-  }
-};
 
-// GET request handler for /api/assets
-export async function GET() {
-  try {
-    const data = await fetchExternalAssetsData();
-    return NextResponse.json(
-      { success: true, data },
-      { headers: { "Cache-Control": "no-store" } }
-    );
+    // Respond with the fetched data
+    return NextResponse.json(data, { status: 200 });
   } catch (error) {
+    // Handle any errors during the fetch
+    console.error(error); // Log the error for debugging
     return NextResponse.json(
-      { success: false, message: "Failed to fetch assets data" },
+      { error: "An error occurred while fetching assets" },
       { status: 500 }
     );
   }

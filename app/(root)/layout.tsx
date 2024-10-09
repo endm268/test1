@@ -1,60 +1,51 @@
-"use client";
-import React, { useEffect, useState } from "react";
+// app/layout.tsx or wherever your layout component is located
+import { cookies } from "next/headers";
 import MobileNav from "@/components/shared/mobileNav";
 import Sidebar from "@/components/shared/sidebar";
 import Header from "@/components/shared/header";
-import { Toaster } from "@/components/ui/toaster";
 import { Separator } from "@/components/ui/separator";
-import { useRouter } from "next/navigation";
+import { Toaster } from "@/components/ui/toaster";
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
-  const [session, setSession] = useState(null);
-  const router = useRouter();
+import { redirect } from "next/navigation";
 
-  // Fetch the session on the client side
-  useEffect(() => {
-    const fetchSession = async () => {
-      try {
-        const res = await fetch("/api/getSession", {
-          credentials: "include",
-        });
-        const data = await res.json();
+export default async function Layout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const cookieStore = cookies();
+  const sessionCookie = cookieStore.get("session");
 
-        // Check if session exists and user is logged in
-        console.log(data.isLoggedIn); // Ensure correct casing
-        if (data.isLoggedIn === true) {
-          // Access with correct case
-          setSession(data);
-        } else {
-          // Redirect to login if session is invalid or user is not logged in
-          router.push("/login");
-        }
-      } catch (error) {
-        console.error("Failed to fetch session:", error);
-        router.push("/login");
-      }
-    };
 
-    fetchSession();
-  }, [router]);
+  if (!sessionCookie) {
+    redirect("/login"); 
+  }
 
-  // Render loading state or main layout based on session
-  // if (!session) {
-  //   return <div>Loading...</div>; // Optionally show a loading state
-  // }
+  let role: string | null = null;
+  try {
+    const sessionData = JSON.parse(sessionCookie?.value || "{}");
+    role = sessionData.role;
+  } catch (error) {
+    console.error("Error parsing session data", error);
+    redirect("/login"); 
+  }
 
+
+  if (!role) {
+    redirect("/login");
+  }
+
+  // Layout rendering
   return (
     <main className="root">
-      <Sidebar />
+      <Sidebar role={role} />
       <MobileNav />
       <div className="root-container">
         <Header />
         <Separator className="my-4 hidden lg:flex" />
-        <div className="wrapper">{children}</div>
+        <div className="wrapper my-8">{children}</div>
       </div>
       <Toaster />
     </main>
   );
-};
-
-export default Layout;
+}
